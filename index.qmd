@@ -1,0 +1,36 @@
+---
+title: "APS - R para Ciência de Dados"
+image: taxi_aps.png
+about:
+  template: jolla
+  image-shape: rectangle
+  image-width: 15em
+id: ppc
+menu:
+  title: "center"
+---
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+:::{#ppc}
+
+Hey! Welcome!
+
+This website was created to host Group 5's APS for the course 'R for Data Science' at Insper. 
+
+Click on the button "APS" bellow to access the Initial Data Analysis.
+
+In this project we conducted a Data Analysis Project using the Dataset <strong style="font-weight:bold;">Taxi Trips Chicago 2024</strong> that can be found at [Kaggle](https://www.kaggle.com/datasets/adelanseur/taxi-trips-chicago-2024?resource=download).
+
+\
+
+<button id="yellowbutton" onclick="window.location.href='APS.html'">APS</button>
+
+\
+
+<img src="logo_insper.png" style="width:150px;">
+:::
+
+

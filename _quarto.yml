@@ -1,0 +1,23 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "APS - R para Ciência de Dados"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - APS.qmd
+
+format:
+  html:
+    theme: lux
+    mainfont: arial
+    linkcolor: "#feb303"
+    monofont: courier new
+    css: styles.css
+    toc: true
+
+
+

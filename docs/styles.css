@@ -1,0 +1,32 @@
+/* css styles */
+
+
+/* Button Style */
+#yellowbutton {
+  display: inline-block;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  background-color: #feb303; /* Yellow background color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover State */
+#yellowbutton:hover {
+  background-color: #FFF19B; /* Lighter shade of yellow on hover */
+}
+
+/* Active State */
+#yellowbutton:active {
+  background-color: #feb303; /* Darker shade of yellow when clicked */
+}
+
+/* Focus State */
+#yellowbutton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.5); /* Yellow focus outline */
+}

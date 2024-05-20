@@ -1,0 +1,829 @@
+---
+format: html
+pagetitle: "APS"
+nav_title: "APS"
+---
+
+## APS {.hidden}
+
+## Introduction
+
+This report describes the plan for a Data Analysis project as described in the scope of the APS for the 'R for Data Science' course at Insper.
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# Loading libraries needed for the project
+library(tidyverse)
+```
+
+\
+<!-- Line Break -->
+
+## Dataset - Taxi Trips Chicago 2024
+
+![](https://raw.githubusercontent.com/joaohcs/Insper_Projects/820c08fb6594a947e93294db3ba9541dd2419b55/7_semestre/R_for_DS/taxi_aps.png){style="float:right;" fig-alt="Taxi Cab made by DALL-E" width="345"}
+
+The dataset used will be the `Taxi Trips Chicago 2024`, found on Kaggle at this [link](https://www.kaggle.com/datasets/adelanseur/taxi-trips-chicago-2024).
+
+::: text-justify
+<p>The dataset contains a wide range of data about taxi trips made within the city of Chicago during the year 2024 up to April 1st.</p>
+
+<p>The information can be used to explore various patterns of consumption, fare behavior, travel times, locations with a high flow of trips, among other insights relevant for businesses, consumers, taxi drivers, and professionals responsible for public policies that are transport-related.</p>
+:::
+
+\
+
+
+## Key Features {#key-features}
+
+The features contained in this Dataset are listed below along with a description and a brief summary of their values and structures.
+
+```{r results='hide', warnings=FALSE, message=FALSE}
+# Loading the Dataset
+
+taxi_db <- read_csv("taxi_trips_db.csv")
+
+```
+
+```{r results='hide', warning='FALSE', message=FALSE}
+# Editing the name of a column since the author left an extra blank space
+
+taxi_db <- taxi_db |> rename(`Dropoff Centroid Location` = `Dropoff Centroid  Location`)
+
+
+```
+
+\
+
+### 1. Trip ID
+
+A unique identifier for each trip, facilitating easy tracking and analysis.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Trip ID`)
+
+# 5 examples of instances
+
+taxi_db$`Trip ID` |> head(5)
+```
+
+\
+
+### 2. Taxi ID
+
+An identifier for the taxi involved in each trip, enabling tracking of individual vehicles.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Taxi ID`)
+
+# 5 examples of instances
+
+taxi_db$`Taxi ID` |> head(5)
+```
+
+\
+
+### 3. Trip Start Timestamp
+
+When the trip started, rounded to the nearest 15 minutes.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Trip Start Timestamp`)
+
+# 5 examples of instances
+
+taxi_db$`Trip Start Timestamp` |> head(5)
+```
+
+\
+
+### 4. Trip End Timestamp
+
+When the trip ended, rounded to the nearest 15 minutes.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Trip End Timestamp`)
+
+# 5 examples of instances
+
+taxi_db$`Trip End Timestamp` |> head(5)
+```
+
+\
+
+### 5. Trip Seconds
+
+Time of the trip in seconds.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Trip Seconds`)
+
+# 5 examples of instances
+
+taxi_db$`Trip Seconds` |> na.omit() |> head(5)
+```
+
+\
+
+### 6. Trip Miles
+
+Distance of the trip in miles.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Trip Miles`)
+
+# 5 examples of instances
+
+taxi_db$`Trip Miles` |> na.omit() |> head(5)
+```
+
+\
+
+### 7. Pickup Census Tract
+
+The Census Tract where the trip began. For privacy, this Census Tract is not shown for some trips. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Pickup Census Tract`)
+
+# 5 examples of instances
+
+taxi_db$`Pickup Census Tract` |> na.omit() |> head(5)
+```
+
+\
+
+### 8. Dropoff Census Tract
+
+The Census Tract where the trip ended. For privacy, this Census Tract is not shown for some trips. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Dropoff Census Tract`)
+
+# 5 examples of instances
+
+taxi_db$`Dropoff Census Tract` |> na.omit() |> head(5)
+```
+
+\
+
+### 9. Pickup Community Area
+
+The Community Area where the trip began. This column will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Pickup Community Area`)
+
+# 5 examples of instances
+
+taxi_db$`Pickup Community Area` |> na.omit() |> head(5)
+```
+
+\
+
+### 10. Dropoff Community Area
+
+The Community Area where the trip ended. This column will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Dropoff Community Area`)
+
+# 5 examples of instances
+
+taxi_db$`Dropoff Community Area` |> na.omit() |> head(5)
+```
+
+\
+
+### 11. Fare
+
+The fare for the trip.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Fare`)
+
+# 5 examples of instances
+
+taxi_db$`Fare` |> na.omit() |> head(5)
+```
+
+\
+
+### 12. Tips
+
+The tip for the trip. Cash tips generally will not be recorded.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Tips`)
+
+# 5 examples of instances
+
+taxi_db$`Tips` |> na.omit() |> head(5)
+```
+
+\
+
+### 13. Tolls
+
+The tolls for the trip. A toll is a fee that must be paid to use certain roads, bridges or tunnels during the trip.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Tolls`)
+
+# 5 examples of instances
+
+taxi_db$`Tolls` |> na.omit() |> head(5)
+```
+
+\
+
+### 14. Extras
+
+Extra charges for the trip.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Extras`)
+
+# 5 examples of instances
+
+taxi_db$`Extras` |> na.omit() |> head(5)
+```
+
+\
+
+### 15. Trip Total
+
+Total cost of the trip, including fare, tips, tolls, and extras.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Trip Total`)
+
+# 5 examples of instances
+
+taxi_db$`Trip Total` |> na.omit() |> head(5)
+```
+
+\
+
+### 16. Payment Type
+
+Type of payment for the trip.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Payment Type`)
+
+# 5 examples of instances
+
+taxi_db$`Payment Type` |> na.omit() |> head(5)
+```
+
+\
+
+### 17. Company
+
+The taxi company.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Company`)
+
+# 5 examples of instances
+
+taxi_db$`Company` |> head(5)
+```
+
+\
+
+### 18. Pickup Centroid Latitude
+
+The latitude of the center of the pickup census tract or the community area if the census tract has been hidden for privacy. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Pickup Centroid Latitude`)
+
+# 5 examples of instances
+
+taxi_db$`Pickup Centroid Latitude` |> na.omit() |> head(5)
+```
+
+\
+
+### 19. Pickup Centroid Longitude
+
+The longitude of the center of the pickup census tract or the community area if the census tract has been hidden for privacy. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Pickup Centroid Longitude`)
+
+# 5 examples of instances
+
+taxi_db$`Pickup Centroid Longitude` |> na.omit() |> head(5)
+```
+
+\
+
+### 20. Pickup Centroid Location
+
+The location of the center of the pickup census tract or the community area if the census tract has been hidden for privacy. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Pickup Centroid Location`)
+
+# 5 examples of instances
+
+taxi_db$`Pickup Centroid Location` |> na.omit() |> head(5)
+```
+
+\
+
+### 21. Dropoff Centroid Latitude
+
+The latitude of the center of the dropoff census tract or the community area if the census tract has been hidden for privacy. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Dropoff Centroid Latitude`)
+
+# 5 examples of instances
+
+taxi_db$`Dropoff Centroid Latitude` |> na.omit() |> head(5)
+```
+
+\
+
+### 22. Dropoff Centroid Longitude
+
+The longitude of the center of the dropoff census tract or the community area if the census tract has been hidden for privacy. This column often will be blank for locations outside Chicago.
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Dropoff Centroid Longitude`)
+
+# 5 examples of instances
+
+taxi_db$`Dropoff Centroid Longitude` |> na.omit() |> head(5)
+```
+
+\
+
+### 23. Dropoff Centroid Location
+
+The location of the center of the dropoff census tract or the community area if the census tract has been hidden for privacy. This column often will be blank for locations outside Chicago.
+
+
+```{r}
+# Descriptive statistics and examples from the column 
+
+summary(taxi_db$`Dropoff Centroid Location`)
+
+# 5 examples of instances
+
+taxi_db$`Dropoff Centroid Location` |> na.omit() |> head(5)
+     
+```
+
+\
+
+## Data Analysis
+### Dealing with NA values
+<p>
+Looking at the results of the summary, we noticed a lot of NA values throughout the features. For some of them (features 7,8, 9, 10, 18, 19, 20, 21, 22, 23), the author tells us previously that the column will often or always show NA values for locations outside Chicago.
+</p>
+<p>
+Because of that, we made a decision of omitting the lines for which those features = NA. We are assuming here that most, if not all, NAs in those columns are due to the fact that the trip was held outside Chicago at some point (either the pickup or dropoff). 
+</p>
+<p>
+We do recognize though two consequences that will follow that decision: (i) that our analysis and any eventual models will not be applicable to trips held outside of Chicago in any direction (pickup or dropoff).; (ii) We may be excluding some lines that for some reason where related to trips held within Chicago, therefore redduccing the amount of data we have.
+</p>
+<p>
+Even though there are those consequences, we still believe wee can create insightful analysis from the remaining data, understanding though the reduction of scope for which those insights will be applicable.
+</p>
+
+\
+
+```{r results='hide', warnings=FALSE, message=FALSE}
+
+# Selecting the columns we want to check for NAs
+columns_list <- c(
+  "Pickup Census Tract", "Dropoff Census Tract",
+  "Pickup Community Area", "Dropoff Community Area",
+  "Pickup Centroid Latitude", "Pickup Centroid Longitude",
+  "Pickup Centroid Location", "Dropoff Centroid Latitude",
+  "Dropoff Centroid Longitude", "Dropoff Centroid Location"
+)
+
+# Filtering the dataset
+taxi_db_chicago <- taxi_db |> 
+  filter(if_all(all_of(columns_list), ~ !is.na(.))) # Applying !is.na() across all columns in columns_list
+
+
+```
+<p>
+Also let's correct some company names that came slightly different but are referring to the same company.
+</p>
+
+```{r results='hide', warnings=FALSE, message=FALSE}
+
+company_mapping <- c(
+  "312 Medallion Management Corp" = "312 Medallion Management Corp",
+  "Medallion Management Corp" = "312 Medallion Management Corp",
+  "Blue Ribbon Taxi Association Inc." = "Blue Ribbon Taxi Association Inc.",
+  "Blue Ribbon Taxi Association" = "Blue Ribbon Taxi Association Inc.",
+  "Blue Ribbon Taxi Association Inc" = "Blue Ribbon Taxi Association Inc.",
+  "Taxicab Insurance Agency Llc" = "Taxicab Insurance Agency, LLC",
+  "Taxicab Insurance Agency, LLC" = "Taxicab Insurance Agency, LLC",
+  "Taxi Affiliation Services"  = "Taxi Affiliation Services LLC - Yell",
+  "Taxi Affiliation Services Llc - Yell" = "Taxi Affiliation Services LLC - Yell",
+  "Taxi Affiliation Services LLC - Yell" = "Taxi Affiliation Services LLC - Yell",
+  "Choice Taxi Association Inc" = "Choice Taxi Association Inc",
+  "Choice Taxi Association" = "Choice Taxi Association Inc"
+)
+
+taxi_db_chicago <- taxi_db_chicago |> 
+  mutate(Company = recode(Company, !!!company_mapping))
+```
+\
+
+<p>
+Now, let's evaluate the remaining data, and the appearance of NA values in other columns.
+</p>
+
+```{r}
+
+# Evaluating other columns for NA values
+taxi_db_chicago |> 
+  select(-all_of(columns_list)) |> 
+  summary()
+
+```
+
+<p> 
+It is interesting to note that for some features, there is exactly the same number of NAs.
+Let's investigate those lines further.
+</p>
+
+```{r}
+
+temp_db <- taxi_db_chicago |>
+  filter(is.na(taxi_db_chicago$Fare)) |> 
+  select(-all_of(columns_list))
+  
+temp_db |> summary()
+
+temp_db |> group_by(temp_db$`Payment Type`) |> 
+  summarise(Count = n()) |> 
+  mutate(Percentage = Count / sum(Count) * 100)
+
+
+```
+
+\
+
+<p> 
+As we can see, for most of this data the payment method is cash, what makes sense since it is harder to track Fare, Tips, Extras, Tolls and therefore Trip Totals when the user is paying by cash.
+</p>
+<p>
+In order to not loose those values and to maintain consistency, we can fill those NAs with the `Median Value` of the column. We can do that for all numeric columns. 
+</p>
+``` {r warning=FALSE}
+
+# Filling the NAs with median value
+taxi_db_chicago <- taxi_db_chicago |> 
+  mutate(across(where(is.numeric), ~ifelse(is.na(.), median(., na.rm = TRUE), .))) # Usando função anônima com .
+
+
+```
+
+### Data Types
+<p>
+As we could see from the summaries above, some data types are not the ideal for data analysis. For example, the timestamps are of type character in the dataset. We could definetely, during the analysis, convert them to objects that are more related to standard time formats, that way it will be easier to manipulate this data, build models and extract insight from them.
+</p>
+```{r}
+
+taxi_db_chicago |>
+  select(`Trip End Timestamp`,  `Trip Start Timestamp`) |> 
+  sapply(class) |> 
+  print()
+
+## Converting to datetime
+# Transformando a classe das colunas de tempo para tipo data
+taxi_db_chicago <- taxi_db_chicago |> 
+  mutate(
+    `Trip Start Timestamp` = mdy_hms(`Trip Start Timestamp`, tz = "America/Chicago"),
+    `Trip End Timestamp` = mdy_hms(`Trip End Timestamp`, tz = "America/Chicago")
+  )
+
+```
+
+\
+
+### Final Dataset 
+<p>
+From now on we will use this treated version of the dataset, the treated dataset is called `trips_chicago`.
+</p>
+``` {r warning=FALSE}
+
+# New dataset
+trips_chicago <- taxi_db_chicago
+
+```
+
+
+\
+
+### Descriptive Statistics
+<p>
+In the section [`Key Features`](#key-features) we already called a `summary()` and a `head()` for a brief overview of the possible variables. Also, in this section we looked at some basic statistics such as mean, median, max and others. However, we can go deeper in this analysis by plotting histograms and box plots in order to get a better understanding of distributions. Also, we can benefit from an understanding of the behavior of dispersion and variance through the dataset features, pretty useful for some models.
+</p>
+```{r warning = FALSE}
+
+library(ggcorrplot)
+
+# List of variables for descriptive analysis
+variables <- c("Trip Seconds", "Trip Miles", "Fare", "Tips", "Extras", "Trip Total")
+
+# Plotting histograms and box plots for each variable after log transformation
+for (var in variables) {
+  # Add a small constant to handle zero values
+  trips_chicago <- trips_chicago |> mutate("{var}_log" := log1p(.data[[var]]))
+  
+  # Histogram for log-transformed variable
+  p1 <- ggplot(trips_chicago, aes(x = .data[[paste0(var, "_log")]])) +
+    geom_histogram(bins = 30, fill = "#feb303", color = "black") +
+    labs(title = paste("Log-Transformed Histogram of", var), x = paste(var, "(log)"), y = "Density (%)")
+  print(p1)
+  
+  # Box plot for log-transformed variable
+  p2 <- ggplot(trips_chicago, aes(y = .data[[paste0(var, "_log")]])) +
+    geom_boxplot(fill = "#feb303", color = "black") +
+    labs(title = paste("Log-Transformed Boxplot of", var), y = paste(var, "(log)"))
+  print(p2)
+}
+
+# Analyzing variance and dispersion for log-transformed variables
+for (var in variables) {
+  log_var <- paste0(var, "_log")
+  
+  if (log_var %in% colnames(trips_chicago)) {
+    var_summary <- trips_chicago |> summarize(
+      mean = mean(.data[[log_var]], na.rm = TRUE),
+      median = median(.data[[log_var]], na.rm = TRUE),
+      sd = sd(.data[[log_var]], na.rm = TRUE),
+      var = var(.data[[log_var]], na.rm = TRUE),
+      min = min(.data[[log_var]], na.rm = TRUE),
+      max = max(.data[[log_var]], na.rm = TRUE),
+      q1 = quantile(.data[[log_var]], 0.25, na.rm = TRUE),
+      q3 = quantile(.data[[log_var]], 0.75, na.rm = TRUE)
+    )
+    print(paste("Descriptive Statistics for Log-Transformed", var))
+    print(var_summary)
+  }
+}
+
+# Create log-transformed variables for correlation analysis
+trips_chicago <- trips_chicago |> 
+  mutate(
+    Trip_Seconds_log = log1p(`Trip Seconds`),
+    Trip_Miles_log = log1p(`Trip Miles`),
+    Fare_log = log1p(Fare),
+    Tips_log = log1p(Tips),
+    Extras_log = log1p(Extras),
+    Trip_Total_log = log1p(`Trip Total`)
+  )
+
+# Select the log-transformed variables for correlation analysis
+log_transformed_vars <- trips_chicago |> 
+  select(Trip_Seconds_log, Trip_Miles_log, Fare_log, Tips_log, Extras_log, Trip_Total_log)
+
+# Compute the correlation matrix
+cor_matrix <- cor(log_transformed_vars, use = "complete.obs")
+
+# Plot the correlation matrix
+ggcorrplot(cor_matrix, 
+           hc.order = TRUE, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3.5, 
+           method = "circle", 
+           colors = c("#6D9EC1", "white", "#E46726"), 
+           title = "Correlation Matrix of Log-Transformed Variables", 
+           ggtheme = theme_minimal()) +
+  theme(
+    plot.title = element_text(size = 15, face = "bold", hjust = 0.5),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    axis.text.y = element_text(angle=0)
+    )
+```
+
+
+
+```{r warning=FALSE}
+
+library(ggplot2) # Already in tidyverse
+
+theme_set(theme_bw())
+
+# Example of histogram
+trips_chicago |> 
+  ggplot(aes(x = taxi_db_chicago$`Trip Miles`, y=..density..)) +
+  geom_histogram(bins = 25, fill = "#feb303", color = "black") +
+  xlim(0, 75) +
+  ylim(0, 0.045) +
+  labs(title = "Histogram for Trip Miles", x = "Trip Miles", y = "Density (%)")
+
+
+```
+
+```{r warning=FALSE}
+
+theme_set(theme_bw())
+
+# Example of boxplot
+trips_chicago |> 
+  ggplot(aes(y = trips_chicago$`Trip Miles`)) +
+  geom_boxplot(fill = "#feb303", color = "black") +
+  ylim(0,5) +
+  labs(title = "Boxplot for Trip Miles", y = "Trip Miles")
+
+```
+\
+<p>
+Trying to plot this boxplot, for example, already shows the  strong concentration of trips in the 'few miles' category, what can also be seen in the histogram. Such kind of distribution will definetely interfere with the way we analyze this feature, we will probably need to apply some transformations to it such as applying log.
+</p> 
+
+
+
+\
+
+### Geographical analysis
+<p>
+We can use libraries that will help us plot in Chicago's Map the places with most pickups or dropoffs. We can also visualize the data segmented by company in order to grasp a better understanding of market dynamics and competition landscape.
+</p>
+
+<p>
+Below we have the maps for pickups and dropoffs
+</p>
+```{r warning=FALSE}
+
+library(ggplot2)
+library(sf)
+library(dplyr)
+
+# Maps for Pickups
+# Convert to an sf object using Pickup Centroid Longitude and Pickup Centroid Latitude
+pickup_sf <- trips_chicago |> 
+  st_as_sf(coords = c("Pickup Centroid Longitude", "Pickup Centroid Latitude"), crs = 4326, agr = "constant")
+
+# Read the Chicago shapefile
+chicago_shapefile <- st_read("boundaries/chicago_shape.shp")
+
+ggplot() +
+  geom_sf(data = chicago_shapefile, fill = "lightblue", color = "black") +
+  geom_sf(data = pickup_sf, color = "red", size = 1, alpha = 0.5) +
+  theme_minimal() +
+  labs(
+    title = "Map of Chicago with Pickup Points",
+    x = "Longitude", y = "Latitude"
+  )8
+
+
+# Maps for Dropoffs
+pickup_sf <- trips_chicago |> 
+  st_as_sf(coords = c("Dropoff Centroid Longitude", "Dropoff Centroid Latitude"), crs = 4326, agr = "constant")
+
+
+ggplot() +
+  geom_sf(data = chicago_shapefile, fill = "lightblue", color = "black") +
+  geom_sf(data = pickup_sf, color = "red", size = 1, alpha = 0.5) +
+  theme_minimal() +
+  labs(
+    title = "Map of Chicago with Dropoff Points",
+    x = "Longitude", y = "Latitude"
+  )
+
+```
+
+\
+<p>
+Below we have the map segmenting pickup per company and showing the amount of trips for each location
+</p>
+
+``` {r warning=FALSE}
+library(RColorBrewer)
+
+# Creating aggregate database for segmenting
+aggregated_data <- trips_chicago |> 
+  group_by(`Pickup Centroid Longitude`, `Pickup Centroid Latitude`, Company) |> 
+  summarise(Trip_Count = n()) |> 
+  ungroup()
+
+# Calculate the total number of trips per company
+company_trip_counts <- aggregated_data |> 
+  group_by(Company) |> 
+  summarise(Total_Trips = sum(Trip_Count)) |> 
+  arrange(desc(Total_Trips))
+
+# Reorder the Company factor levels based on the number of trips
+aggregated_data <- aggregated_data |> 
+  mutate(Company = factor(Company, levels = company_trip_counts$Company))
+
+# Create a custom color scale with different colors for the top companies
+top_n <- 10  # Number of top comps
+
+distinct_colors <- c(
+  RColorBrewer::brewer.pal(min(top_n, 8), "Set1"),
+  RColorBrewer::brewer.pal(min(top_n - 8, 8), "Set2"),
+  RColorBrewer::brewer.pal(min(top_n - 16, 12), "Set3")
+)
+
+# Assign distinct colors to the top companies
+company_colors <- setNames(
+  c(distinct_colors, rep("grey", length(company_trip_counts$Company) - length(distinct_colors))),
+  company_trip_counts$Company
+)
+
+# Convert to an sf object using Pickup Centroid Longitude and Pickup Centroid Latitude
+pickup_sf <- st_as_sf(aggregated_data, coords = c("Pickup Centroid Longitude", "Pickup Centroid Latitude"), crs = 4326, agr = "constant")
+
+# Read the Chicago shapefile
+chicago_shapefile <- st_read("boundaries/chicago_shape.shp")
+```
+
+``` {r  fig.width=10, fig.height=7}
+# Plot the map with the pickup points, colored by Company and sized by the number of trips
+ggplot() +
+  geom_sf(data = chicago_shapefile, fill = "lightblue", color = "black") +
+  geom_sf(data = pickup_sf, aes(color = Company, size = Trip_Count), alpha = 1) +
+  scale_size_continuous(name = "Trip Count", range = c(1, 10)) + # Adjust the range as needed
+  theme_minimal() +
+  labs(
+    title = "Map of Chicago with Pickup Points Colored by Company and Sized by Trip Count",
+    x = "Longitude", y = "Latitude"
+  ) +
+  scale_color_manual(name = "Company", values = company_colors) + 
+  guides(color = guide_legend(ncol = 2, override.aes = list(size = 4)), 
+         size = guide_legend(order = 1)) + 
+  theme(
+    legend.position = "right",
+    legend.text = element_text(size = 8),
+    legend.title = element_text(size = 10),
+    legend.key.size = unit(0.5, "lines")
+  )
+
+```
+
+\
+
+### Econometrics and Machine Learning models
+<p>
+As a more sophisticated way for using the dataset to extract insights, we can leverage Machine Learning models for prediction and clustering.
+</p>
+<p>
+Here we used a Linear Regression fro Fare, a Random Forest for Fare Prediction and K-Means + PCA to cluster the trips and get a better understanding opf the clusters in 2 dimensions.
+</p>
+
+<p>
+Due to the lack of computational resources, we conducted this part of the analysis in a Jupyter Notebook in Google Collab. [Link for the notebook](https://colab.research.google.com/drive/1olu5xjJYXB028jMglFtWt9h-qiLyOSbV?usp=sharing)
+</p>
+
+\
